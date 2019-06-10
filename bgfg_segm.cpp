@@ -25,25 +25,25 @@ const char* keys = {
 int main(int argc, const char** argv) {
     help();
     cv::CommandLineParser parser(argc, argv, keys);
-    const bool bUseDefaultCamera = parser.get<bool>("camera");
-    const std::string sVideoFilePath = parser.get<std::string>("file");
+    const bool bUseDefaultCamera = true;//= parser.get<bool>("camera");
+    //const std::string sVideoFilePath = parser.get<std::string>("file");
     cv::VideoCapture oVideoInput;
     cv::Mat oCurrInputFrame, oCurrSegmMask, oCurrReconstrBGImg;
     if(bUseDefaultCamera) {
         oVideoInput.open(0);
         oVideoInput >> oCurrInputFrame;
     }
-    else {
-        oVideoInput.open(sVideoFilePath);
-        oVideoInput >> oCurrInputFrame;
-        oVideoInput.set(CV_CAP_PROP_POS_FRAMES,0);
+    else {;
+    //    oVideoInput.open(sVideoFilePath);
+    //    oVideoInput >> oCurrInputFrame;
+    //    oVideoInput.set(CV_CAP_PROP_POS_FRAMES,0);
     }
-    parser.printParams();
+    //parser.printParams();
     if(!oVideoInput.isOpened() || oCurrInputFrame.empty()) {
         if(bUseDefaultCamera)
             printf("Could not open default camera.\n");
         else
-            printf("Could not open video file at '%s'.\n",sVideoFilePath.c_str());
+           ;// printf("Could not open video file at '%s'.\n",sVideoFilePath.c_str());
         return -1;
     }
     oCurrSegmMask.create(oCurrInputFrame.size(),CV_8UC1);
@@ -58,7 +58,7 @@ int main(int argc, const char** argv) {
         oVideoInput >> oCurrInputFrame;
         if(oCurrInputFrame.empty())
             break;
-        oBGSAlg(oCurrInputFrame,oCurrSegmMask,double(k<=100)); // lower rate in the early frames helps bootstrap the model when foreground is present
+        oBGSAlg.apply(oCurrInputFrame,oCurrSegmMask,double(k<=100)); // lower rate in the early frames helps bootstrap the model when foreground is present
         oBGSAlg.getBackgroundImage(oCurrReconstrBGImg);
         imshow("input",oCurrInputFrame);
         imshow("segmentation mask",oCurrSegmMask);
